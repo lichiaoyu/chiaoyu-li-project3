@@ -10,6 +10,7 @@ export default function GamePage({ user }) {
   const { state, dispatch } = useGame();
 
   const loadedKeyRef = useRef(null);
+  const previousStatusRef = useRef("idle");
 
   useEffect(() => {
     loadedKeyRef.current = null;
@@ -109,6 +110,39 @@ export default function GamePage({ user }) {
     markCompleted();
   }, [gameId, user, state.status, state.board, state.completedBy]);
 
+  useEffect(() => {
+    const currentKey = `${gameId}:${user || "guest"}`;
+    const previousStatus = previousStatusRef.current;
+    previousStatusRef.current = state.status;
+
+    if (!gameId || !user) return;
+    if (previousStatus !== "playing") return;
+    if (state.status !== "won") return;
+    if (state.elapsedMs <= 0) return;
+    if (loadedKeyRef.current !== currentKey) return;
+
+    async function submitHighscore() {
+      try {
+        await fetch("/api/highscore", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            gameId,
+            username: user,
+            timeMs: state.elapsedMs,
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to submit highscore:", error);
+      }
+    }
+
+    submitHighscore();
+  }, [gameId, user, state.status, state.elapsedMs]);
+
   if (state.status === "idle") {
     return (
       <main className="main-content">
@@ -122,7 +156,7 @@ export default function GamePage({ user }) {
   const subtitle =
     state.mode === "easy"
       ? "Half the board is pre-filled. Use numbers 1–6."
-      : "28–30 clues. Use numbers 1–9.";
+      : "28–30 clues. Use numbers 1–9. Best times are tracked as highscores.";
 
   const userCompleted =
     !!user &&

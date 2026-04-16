@@ -8,7 +8,18 @@ export default function Scores() {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((data) => setScores(data))
+      .then((data) =>
+        setScores(
+          Array.isArray(data)
+            ? data.filter(
+                (item) =>
+                  item &&
+                  typeof item.username === "string" &&
+                  Number.isFinite(Number(item.wins))
+              )
+            : []
+        )
+      )
       .catch(() => setScores([]));
   }, []);
 

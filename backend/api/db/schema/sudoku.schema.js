@@ -33,6 +33,22 @@ const sudokuSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    highScores: {
+      type: [
+        {
+          username: {
+            type: String,
+            required: true,
+          },
+          timeMs: {
+            type: Number,
+            required: true,
+            min: 0,
+          },
+        },
+      ],
+      default: [],
+    },
     progressByUser: {
       type: mongoose.Schema.Types.Mixed,
       default: {},

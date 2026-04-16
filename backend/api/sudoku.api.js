@@ -8,19 +8,53 @@ import SudokuModel, {
 
 const router = express.Router();
 
-const WORDS = [
-  "Coconut", "Red", "House", "Apple", "River", "Moon", "Forest", "Sunny",
-  "Cloud", "Tiger", "Peach", "Garden", "Silver", "Maple", "Ocean", "Berry",
-  "Golden", "Pine", "Snow", "Willow", "Star", "Honey", "Mango", "Stone",
-  "Breeze", "Jade", "Cherry", "Coral", "Dawn", "Falcon", "Glacier", "Hazel",
-  "Ivy", "Juniper", "Kiwi", "Lagoon", "Meadow", "Nova", "Olive", "Pearl",
-  "Quartz", "Rose", "Sage", "Topaz", "Umber", "Velvet", "Wave", "Yarrow",
-  "Zephyr", "Amber", "Blossom", "Cedar", "Drift", "Echo", "Frost", "Grove",
-  "Harbor", "Indigo", "Lotus", "Marble", "Nectar", "Orchid", "Petal", "Raven",
-  "Spruce", "Thistle", "Vale", "Wren", "Aspen", "Birch", "Clover", "Dune",
-  "Elm", "Fern", "Ginger", "Hollow", "Iris", "Lemon", "Misty", "Noble",
-  "Opal", "Plum", "Robin", "Shore", "Tulip", "Violet", "Walnut", "Yuzu"
+const THEMES = [
+  "Matcha", "Sencha", "Genmaicha", "Hojicha", "Gyokuro", "Bancha", "Konacha", "Cha",
+  "Chasen", "Chawan", "Natsume", "Kyusu", "Tatami", "Shoji", "Tokonoma", "Kimono",
+  "Yukata", "Sakura", "Ume", "Yuzu", "Mikan", "Sudachi", "Lotus", "Bamboo",
+  "Hinoki", "Willow", "Maple", "Plum", "Petal", "Blossom", "Lantern", "Temple",
+  "Pagoda", "Shrine", "Harbor", "River", "Brook", "Cascade", "Mist", "Cloud",
+  "Moon", "Star", "Dawn", "Twilight", "Sunrise", "Breeze", "Rain", "Snow",
+  "Stone", "Pebble", "Jade", "Amber", "Pearl", "Ivory", "Velvet", "Silk",
+  "Koi", "Crane", "Sparrow", "Heron", "Fox", "Deer", "Meadow", "Grove",
+  "Fern", "Iris", "Camellia", "Orchid", "Sage", "Olive", "Clover", "Topaz",
+  "Umber", "Sora", "Hana", "Midori", "Kaede", "Aoi", "Ren", "Yama", "Mori"
 ];
+
+const PREFIXES = [
+  "Aki", "Asa", "Aya", "Chi", "Fuji", "Haru", "Hoshi", "Ichi", "Itsu", "Kaze",
+  "Kiku", "Kiyo", "Kuma", "Matsu", "Mizu", "Natsu", "Niji", "Riku", "Suzu", "Taki",
+  "Tora", "Yori"
+];
+
+const SUFFIXES = [
+  "Bloom", "Brook", "Cloud", "Dawn", "Field", "Flame", "Garden", "Glow", "Grove", "Harbor",
+  "Hill", "Leaf", "Light", "Mist", "Moon", "Path", "Petal", "River", "Shade", "Song",
+  "Star", "Stone", "Vale", "Wave"
+];
+
+function buildWordBank() {
+  const bank = new Set(THEMES);
+
+  for (const prefix of PREFIXES) {
+    for (const suffix of SUFFIXES) {
+      bank.add(`${prefix}${suffix}`);
+    }
+  }
+
+  for (const first of THEMES) {
+    for (const second of THEMES) {
+      if (first !== second && bank.size < 1200) {
+        bank.add(`${first}${second}`);
+      }
+    }
+    if (bank.size >= 1200) break;
+  }
+
+  return Array.from(bank);
+}
+
+const WORDS = buildWordBank();
 
 const EASY_BANK = [
   {
@@ -184,7 +218,16 @@ async function generateUnusedName() {
 router.get("/", async function (req, res) {
   try {
     const games = await getAllSudokus();
-    return res.json(games);
+
+    const summaries = games.map((game) => ({
+      _id: game._id,
+      name: game.name,
+      createdAt: game.createdAt,
+      difficulty: game.difficulty,
+      createdBy: game.createdBy,
+    }));
+
+    return res.json(summaries);
   } catch (error) {
     return res.status(500).json({ error: "Failed to fetch sudoku games" });
   }
@@ -231,6 +274,7 @@ router.post("/", async function (req, res) {
       solution: chosen.solution,
       currentState: chosen.puzzle,
       completedBy: [],
+      highScores: [],
       progressByUser: {
         [username]: chosen.puzzle,
       },

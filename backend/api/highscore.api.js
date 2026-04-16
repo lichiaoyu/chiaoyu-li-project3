@@ -1,31 +1,37 @@
 import express from "express";
-import UserModel from "./db/model/user.model.js";
 import SudokuModel from "./db/model/sudoku.model.js";
 
 const router = express.Router();
 
+function normalizeScore(score) {
+  if (!score || typeof score.username !== "string") {
+    return null;
+  }
+
+  const username = score.username.trim();
+  const timeMs = Number(score.timeMs);
+
+  if (!username || !Number.isFinite(timeMs) || timeMs < 0) {
+    return null;
+  }
+
+  return { username, timeMs };
+}
+
 router.get("/", async function (req, res) {
   try {
-    const users = await UserModel.find({}, "username").exec();
     const games = await SudokuModel.find({}, "completedBy").exec();
-
-    const winMap = {};
-
-    for (const user of users) {
-      winMap[user.username] = 0;
-    }
+    const winsByUser = new Map();
 
     for (const game of games) {
       for (const username of game.completedBy || []) {
-        if (winMap[username] !== undefined) {
-          winMap[username] += 1;
-        }
+        if (typeof username !== "string" || !username.trim()) continue;
+        winsByUser.set(username, (winsByUser.get(username) || 0) + 1);
       }
     }
 
-    const result = Object.entries(winMap)
+    const result = Array.from(winsByUser.entries())
       .map(([username, wins]) => ({ username, wins }))
-      .filter((item) => item.wins > 0)
       .sort((a, b) => b.wins - a.wins || a.username.localeCompare(b.username));
 
     return res.json(result);
@@ -36,20 +42,66 @@ router.get("/", async function (req, res) {
 });
 
 router.post("/", async function (req, res) {
-  return res.json({ ok: true });
-});
-
-router.get("/:gameId", async function (req, res) {
   try {
-    const game = await SudokuModel.findById(req.params.gameId).exec();
+    const { gameId, username, timeMs } = req.body;
+
+    if (!gameId || !username || !Number.isFinite(timeMs) || timeMs < 0) {
+      return res.status(400).json({ error: "gameId, username, and timeMs are required" });
+    }
+
+    const game = await SudokuModel.findById(gameId).exec();
 
     if (!game) {
       return res.status(404).json({ error: "Game not found" });
     }
 
+    const existingScores = (Array.isArray(game.highScores) ? game.highScores : [])
+      .map(normalizeScore)
+      .filter(Boolean);
+    const existingIndex = existingScores.findIndex((score) => score.username === username);
+
+    if (existingIndex >= 0) {
+      if (timeMs < existingScores[existingIndex].timeMs) {
+        existingScores[existingIndex].timeMs = timeMs;
+      }
+    } else {
+      existingScores.push({ username, timeMs });
+    }
+
+    existingScores.sort((a, b) => a.timeMs - b.timeMs || a.username.localeCompare(b.username));
+
+    game.highScores = existingScores;
+    await game.save();
+
+    return res.status(200).json({
+      gameId: game._id,
+      game: game.name,
+      highScores: game.highScores,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to update highscore" });
+  }
+});
+
+router.get("/:gameId", async function (req, res) {
+  try {
+    const game = await SudokuModel.findById(req.params.gameId, "name highScores").exec();
+
+    if (!game) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    const scores = (game.highScores || [])
+      .map(normalizeScore)
+      .filter(Boolean)
+      .sort(
+      (a, b) => a.timeMs - b.timeMs || a.username.localeCompare(b.username)
+      );
+
     return res.json({
       gameId: game._id,
-      completedBy: game.completedBy || [],
+      game: game.name,
+      highScores: scores,
     });
   } catch (error) {
     return res.status(500).json({ error: "Failed to fetch game highscore" });

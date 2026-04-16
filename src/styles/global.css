@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Averia+Libre:wght@300;400;700&display=swap');
 
 :root{
-  --bg-cream: rgb(190, 202, 181);
-  --green-dark: rgb(79, 102, 60);
-  --green-medium: rgb(90, 116, 68);
-  --green-text: rgb(35, 47, 27);
-  --green-hover: rgb(67, 88, 51);
-  --green-light: rgb(171, 185, 160);
-  --green-border: rgb(116, 136, 99);
+  --bg-cream: rgb(178, 191, 168);
+  --green-dark: rgb(68, 89, 50);
+  --green-medium: rgb(78, 102, 58);
+  --green-text: rgb(28, 39, 21);
+  --green-hover: rgb(57, 76, 42);
+  --green-light: rgb(157, 172, 145);
+  --green-border: rgb(103, 123, 87);
   --shadow: 0 16px 36px rgba(30, 38, 24, 0.24);
   --nav-h: 64px;
 }
@@ -19,8 +19,8 @@ body{
   margin:0;
   font-family: 'Averia Libre', 'Comic Sans MS', cursive;
   background:
-    radial-gradient(circle at top, rgba(79, 102, 60, 0.14), transparent 38%),
-    linear-gradient(180deg, rgb(209, 219, 200) 0%, var(--bg-cream) 100%);
+    radial-gradient(circle at top, rgba(68, 89, 50, 0.18), transparent 38%),
+    linear-gradient(180deg, rgb(194, 205, 184) 0%, var(--bg-cream) 100%);
   color: var(--green-text);
 }
 
@@ -113,7 +113,7 @@ body{
    HOME: HERO + FEATURES
 ========================= */
 .hero{
-  background: linear-gradient(180deg, rgba(207, 218, 197, 0.98), rgba(186, 199, 176, 0.98));
+  background: linear-gradient(180deg, rgba(195, 206, 185, 0.98), rgba(174, 187, 163, 0.98));
   border: 1px solid var(--green-border);
   border-radius: 18px;
   box-shadow: var(--shadow);
@@ -164,7 +164,7 @@ body{
 
 .features{
   margin-top: 16px;
-  background: linear-gradient(180deg, rgba(203, 214, 193, 0.98), rgba(183, 196, 172, 0.98));
+  background: linear-gradient(180deg, rgba(191, 202, 181, 0.98), rgba(170, 183, 160, 0.98));
   border: 1px solid var(--green-border);
   border-radius: 18px;
   box-shadow: var(--shadow);
@@ -219,7 +219,7 @@ body{
    GENERIC PAGE SECTION
 ========================= */
 .page-section{
-  background: linear-gradient(180deg, rgba(203, 214, 193, 0.98), rgba(183, 196, 172, 0.98));
+  background: linear-gradient(180deg, rgba(191, 202, 181, 0.98), rgba(170, 183, 160, 0.98));
   border: 1px solid var(--green-border);
   border-radius: 18px;
   box-shadow: var(--shadow);
@@ -464,7 +464,7 @@ button.game-card{
    GAME PAGES (easy/hard)
 ========================= */
 .game-section{
-  background: linear-gradient(180deg, rgba(203, 214, 193, 0.98), rgba(183, 196, 172, 0.98));
+  background: linear-gradient(180deg, rgba(191, 202, 181, 0.98), rgba(170, 183, 160, 0.98));
   border: 1px solid var(--green-border);
   border-radius: 18px;
   box-shadow: var(--shadow);

@@ -5,7 +5,7 @@ export default function Navbar({ user, setUser }) {
 
   async function handleLogout() {
     try {
-      await fetch("/api/logout", {
+      await fetch("/api/user/logout", {
         method: "POST",
         credentials: "include",
       });

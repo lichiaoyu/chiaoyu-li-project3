@@ -28,11 +28,6 @@ app.use("/api/user", userApi);
 app.use("/api/sudoku", sudokuApi);
 app.use("/api/highscore", highscoreApi);
 
-app.post("/api/logout", (req, res) => {
-  res.clearCookie("username");
-  res.json({ ok: true });
-});
-
 const frontendDir = path.join(__dirname, "dist");
 app.use(express.static(frontendDir));
 
