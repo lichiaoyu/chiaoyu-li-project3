@@ -12,4 +12,16 @@ export function findUserByUsername(username) {
   return UserModel.findOne({ username }).exec();
 }
 
+export function findUserBySessionToken(sessionToken) {
+  return UserModel.findOne({ sessionToken }).exec();
+}
+
+export function updateUserSessionToken(userId, sessionToken) {
+  return UserModel.findByIdAndUpdate(userId, { sessionToken }, { new: true }).exec();
+}
+
+export function clearSessionToken(sessionToken) {
+  return UserModel.updateOne({ sessionToken }, { $set: { sessionToken: null } }).exec();
+}
+
 export default UserModel;

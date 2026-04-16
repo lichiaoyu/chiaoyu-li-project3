@@ -1,5 +1,6 @@
 import express from "express";
 import SudokuModel from "./db/model/sudoku.model.js";
+import { getAuthenticatedUsername } from "../auth.js";
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ router.get("/", async function (req, res) {
 
 router.post("/", async function (req, res) {
   try {
-    const username = req.cookies.username;
+    const username = await getAuthenticatedUsername(req);
     const { gameId, timeMs } = req.body;
 
     if (!username) {
@@ -58,6 +59,10 @@ router.post("/", async function (req, res) {
 
     if (!game) {
       return res.status(404).json({ error: "Game not found" });
+    }
+
+    if (!Array.isArray(game.completedBy) || !game.completedBy.includes(username)) {
+      return res.status(403).json({ error: "Game must be completed before recording a highscore" });
     }
 
     const existingScores = (Array.isArray(game.highScores) ? game.highScores : [])

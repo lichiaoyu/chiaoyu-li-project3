@@ -12,6 +12,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    sessionToken: {
+      type: String,
+      default: null,
+      index: true,
+    },
   },
   {
     timestamps: true,

@@ -5,92 +5,11 @@ import SudokuModel, {
   findSudokuById,
   deleteSudokuById,
 } from "./db/model/sudoku.model.js";
+import { getAuthenticatedUsername } from "../auth.js";
+import { boardsMatch } from "../sudoku-validation.js";
+import { WORD_BANK } from "../word-bank.js";
 
 const router = express.Router();
-
-const COLOR_WORDS = [
-  "Red",
-  "Blue",
-  "Green",
-  "Yellow",
-  "Orange",
-  "Purple",
-  "Pink",
-  "Brown",
-  "Black",
-  "White",
-  "Gray",
-  "Silver",
-  "Gold",
-  "Amber",
-  "Aqua",
-  "Azure",
-  "Beige",
-  "Bronze",
-  "Coral",
-  "Cream",
-  "Crimson",
-  "Cyan",
-  "Denim",
-  "Emerald",
-  "Fuchsia",
-  "Indigo",
-  "Ivory",
-  "Jade",
-  "Khaki",
-  "Lavender",
-  "Lilac",
-  "Lime",
-  "Magenta",
-  "Maroon",
-  "Mint",
-  "Navy",
-  "Olive",
-  "Peach",
-  "Pearl",
-  "Plum",
-  "Rose",
-  "Ruby",
-  "Rust",
-  "Saffron",
-  "Salmon",
-  "Scarlet",
-  "Tan",
-  "Teal",
-  "Turquoise",
-  "Violet",
-];
-
-const COLOR_MODIFIERS = [
-  "Soft",
-  "Light",
-  "Deep",
-  "Bright",
-  "Pale",
-  "Warm",
-  "Cool",
-  "Rich",
-  "Dark",
-  "Muted",
-  "Fresh",
-  "Clear",
-  "Bold",
-  "Dusty",
-  "Glossy",
-  "Matte",
-  "Icy",
-  "Sunny",
-  "Golden",
-  "Rosy",
-  "Berry",
-  "Honey",
-  "Smoky",
-  "Velvet",
-  "Frosted",
-  "Pastel",
-];
-
-const WORD_BANK = [...new Set([...COLOR_MODIFIERS, ...COLOR_WORDS])];
 
 const EASY_SEEDS = [
   {
@@ -448,7 +367,7 @@ router.get("/:gameId", async function (req, res) {
 // POST /api/sudoku
 router.post("/", async function (req, res) {
   try {
-    const username = req.cookies.username;
+    const username = await getAuthenticatedUsername(req);
     if (!username) {
       return res.status(401).json({ error: "Not logged in" });
     }
@@ -487,11 +406,17 @@ router.post("/", async function (req, res) {
 // PUT /api/sudoku/:gameId
 router.put("/:gameId", async function (req, res) {
   try {
-    const username = req.cookies.username;
+    const username = await getAuthenticatedUsername(req);
     const { currentState, completedBy } = req.body;
 
     if (!username) {
       return res.status(401).json({ error: "Not logged in" });
+    }
+
+    const game = await SudokuModel.findById(req.params.gameId).exec();
+
+    if (!game) {
+      return res.status(404).json({ error: "Game not found" });
     }
 
     const updateData = {};
@@ -501,21 +426,21 @@ router.put("/:gameId", async function (req, res) {
     }
 
     if (completedBy) {
-      const nextCompletedBy = Array.isArray(completedBy)
-        ? Array.from(new Set([...completedBy, username]))
-        : [username];
+      if (!boardsMatch(currentState, game.solution)) {
+        return res.status(400).json({ error: "Solved board required to mark a game complete" });
+      }
+
+      const nextCompletedBy = Array.from(
+        new Set([...(game.completedBy || []), username])
+      );
       updateData.completedBy = nextCompletedBy;
     }
 
     const updatedGame = await SudokuModel.findByIdAndUpdate(
-      req.params.gameId,
+      game._id,
       { $set: updateData },
       { new: true }
     ).exec();
-
-    if (!updatedGame) {
-      return res.status(404).json({ error: "Game not found" });
-    }
 
     return res.json(updatedGame);
   } catch (error) {

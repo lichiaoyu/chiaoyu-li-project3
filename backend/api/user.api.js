@@ -1,17 +1,27 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import { createUser, findUserByUsername } from "./db/model/user.model.js";
+import {
+  createUser,
+  findUserByUsername,
+  updateUserSessionToken,
+} from "./db/model/user.model.js";
+import {
+  clearSession,
+  generateSessionToken,
+  getAuthenticatedUser,
+  setSessionCookie,
+} from "../auth.js";
 
 const router = express.Router();
 
-router.get("/isLoggedIn", (req, res) => {
-  const username = req.cookies.username;
+router.get("/isLoggedIn", async (req, res) => {
+  const user = await getAuthenticatedUser(req);
 
-  if (!username) {
+  if (!user) {
     return res.status(401).json({ error: "Not logged in" });
   }
 
-  return res.json({ username });
+  return res.json({ username: user.username });
 });
 
 router.post("/register", async (req, res) => {
@@ -29,17 +39,14 @@ router.post("/register", async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    await createUser({
+    const user = await createUser({
       username,
       passwordHash,
     });
 
-    res.cookie("username", username, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    const sessionToken = generateSessionToken();
+    await updateUserSessionToken(user._id, sessionToken);
+    setSessionCookie(res, sessionToken);
 
     return res.status(201).json({ username });
   } catch (error) {
@@ -66,12 +73,9 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    res.cookie("username", username, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    const sessionToken = generateSessionToken();
+    await updateUserSessionToken(user._id, sessionToken);
+    setSessionCookie(res, sessionToken);
 
     return res.json({ username });
   } catch (error) {
@@ -80,8 +84,8 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/logout", (req, res) => {
-  res.clearCookie("username");
+router.post("/logout", async (req, res) => {
+  await clearSession(res, req);
   return res.json({ ok: true });
 });
 
