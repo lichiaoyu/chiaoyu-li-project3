@@ -45,9 +45,9 @@ export default function Games({ user }) {
     <>
       <main className="main-content">
         <section className="page-section">
-          <h1 className="page-title">Game Selection</h1>
+          <h1 className="page-title">Puzzle List</h1>
           <p className="page-subtitle">
-            Create a new puzzle or choose an existing one.
+            Start a new puzzle or open one below.
           </p>
 
           <div className="button-group">
@@ -56,14 +56,14 @@ export default function Games({ user }) {
               onClick={() => handleCreateGame("EASY")}
               disabled={!user}
             >
-              Create Easy Game
+              New Easy Puzzle
             </button>
             <button
               className="cta-button"
               onClick={() => handleCreateGame("NORMAL")}
               disabled={!user}
             >
-              Create Normal Game
+              New Normal Puzzle
             </button>
           </div>
 

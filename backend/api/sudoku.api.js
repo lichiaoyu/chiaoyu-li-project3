@@ -8,53 +8,109 @@ import SudokuModel, {
 
 const router = express.Router();
 
-const THEMES = [
-  "Matcha", "Sencha", "Genmaicha", "Hojicha", "Gyokuro", "Bancha", "Konacha", "Cha",
-  "Chasen", "Chawan", "Natsume", "Kyusu", "Tatami", "Shoji", "Tokonoma", "Kimono",
-  "Yukata", "Sakura", "Ume", "Yuzu", "Mikan", "Sudachi", "Lotus", "Bamboo",
-  "Hinoki", "Willow", "Maple", "Plum", "Petal", "Blossom", "Lantern", "Temple",
-  "Pagoda", "Shrine", "Harbor", "River", "Brook", "Cascade", "Mist", "Cloud",
-  "Moon", "Star", "Dawn", "Twilight", "Sunrise", "Breeze", "Rain", "Snow",
-  "Stone", "Pebble", "Jade", "Amber", "Pearl", "Ivory", "Velvet", "Silk",
-  "Koi", "Crane", "Sparrow", "Heron", "Fox", "Deer", "Meadow", "Grove",
-  "Fern", "Iris", "Camellia", "Orchid", "Sage", "Olive", "Clover", "Topaz",
-  "Umber", "Sora", "Hana", "Midori", "Kaede", "Aoi", "Ren", "Yama", "Mori"
+const COLOR_WORDS = [
+  "Red",
+  "Blue",
+  "Green",
+  "Yellow",
+  "Orange",
+  "Purple",
+  "Pink",
+  "Brown",
+  "Black",
+  "White",
+  "Gray",
+  "Silver",
+  "Gold",
+  "Amber",
+  "Aqua",
+  "Azure",
+  "Beige",
+  "Bronze",
+  "Coral",
+  "Cream",
+  "Crimson",
+  "Cyan",
+  "Denim",
+  "Emerald",
+  "Fuchsia",
+  "Indigo",
+  "Ivory",
+  "Jade",
+  "Khaki",
+  "Lavender",
+  "Lilac",
+  "Lime",
+  "Magenta",
+  "Maroon",
+  "Mint",
+  "Navy",
+  "Olive",
+  "Peach",
+  "Pearl",
+  "Plum",
+  "Rose",
+  "Ruby",
+  "Rust",
+  "Saffron",
+  "Salmon",
+  "Scarlet",
+  "Tan",
+  "Teal",
+  "Turquoise",
+  "Violet",
 ];
 
-const PREFIXES = [
-  "Aki", "Asa", "Aya", "Chi", "Fuji", "Haru", "Hoshi", "Ichi", "Itsu", "Kaze",
-  "Kiku", "Kiyo", "Kuma", "Matsu", "Mizu", "Natsu", "Niji", "Riku", "Suzu", "Taki",
-  "Tora", "Yori"
-];
-
-const SUFFIXES = [
-  "Bloom", "Brook", "Cloud", "Dawn", "Field", "Flame", "Garden", "Glow", "Grove", "Harbor",
-  "Hill", "Leaf", "Light", "Mist", "Moon", "Path", "Petal", "River", "Shade", "Song",
-  "Star", "Stone", "Vale", "Wave"
+const COLOR_MODIFIERS = [
+  "Soft",
+  "Light",
+  "Deep",
+  "Bright",
+  "Pale",
+  "Warm",
+  "Cool",
+  "Rich",
+  "Dark",
+  "Muted",
+  "Fresh",
+  "Clear",
+  "Bold",
+  "Dusty",
+  "Glossy",
+  "Matte",
+  "Icy",
+  "Sunny",
+  "Golden",
+  "Rosy",
+  "Berry",
+  "Honey",
+  "Smoky",
+  "Velvet",
+  "Frosted",
+  "Pastel",
 ];
 
 function buildWordBank() {
-  const bank = new Set(THEMES);
+  const bank = new Set(COLOR_WORDS);
 
-  for (const prefix of PREFIXES) {
-    for (const suffix of SUFFIXES) {
-      bank.add(`${prefix}${suffix}`);
+  for (const modifier of COLOR_MODIFIERS) {
+    for (const color of COLOR_WORDS) {
+      bank.add(`${modifier} ${color}`);
     }
   }
 
-  for (const first of THEMES) {
-    for (const second of THEMES) {
-      if (first !== second && bank.size < 1200) {
-        bank.add(`${first}${second}`);
+  for (const firstColor of COLOR_WORDS) {
+    for (const secondColor of COLOR_WORDS) {
+      if (firstColor !== secondColor) {
+        bank.add(`${firstColor} ${secondColor}`);
       }
     }
-    if (bank.size >= 1200) break;
   }
 
   return Array.from(bank);
 }
 
-const WORDS = buildWordBank();
+const WORD_BANK = buildWordBank();
 
 const EASY_SEEDS = [
   {
@@ -355,9 +411,11 @@ function randomItem(arr) {
 
 function generateUniqueName() {
   const used = new Set();
+
   while (used.size < 3) {
-    used.add(randomItem(WORDS));
+    used.add(randomItem(WORD_BANK));
   }
+
   return Array.from(used).join(" ");
 }
 
