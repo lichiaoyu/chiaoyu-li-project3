@@ -38,7 +38,7 @@ export default function Rules() {
               <a href="mailto:sudoku@gamemail.com" className="contact-link">sudoku@gamemail.com</a>
               <br />
               GitHub:
-              <a href="https://github.com/lichiaoyu/sudoku-project" className="contact-link">github.com/lichiaoyu/sudoku-project</a>
+              <a href="https://github.com/lichiaoyu/chiaoyu-li-project3" className="contact-link">github.com/lichiaoyu/sudoku-project</a>
               <br />
               LinkedIn:
               <a href="https://www.linkedin.com/in/sudokugame/" className="contact-link">linkedin.com/in/sudokugame</a>
