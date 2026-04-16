@@ -7,7 +7,7 @@
 .cell.selected {
   outline: 3px solid rgba(79, 102, 60, 0.92);
   outline-offset: -3px;
-  background: rgba(112, 134, 92, 0.2);
+  background: rgba(79, 102, 60, 0.18);
 }
 
 /* Incorrect: red border + light red fill */
@@ -18,8 +18,8 @@
 
 /* Hint: strong background highlight (more obvious than border) */
 .cell.hint {
-  background: rgba(229, 217, 176, 0.72) !important;
-  box-shadow: 0 0 0 3px rgba(112, 134, 92, 0.28) inset;
+  background: rgba(178, 170, 118, 0.72) !important;
+  box-shadow: 0 0 0 3px rgba(79, 102, 60, 0.2) inset;
 }
 
 /* Prefilled cells: slightly stronger (if your global.css already styles .fixed,
@@ -80,8 +80,8 @@ button.cta-button:disabled {
   padding: 10px 12px;
 
   border-radius: 12px;
-  background: rgba(244, 242, 236, 0.96);
-  border: 1.5px solid rgba(112, 134, 92, 0.32);
+  background: rgba(214, 223, 205, 0.96);
+  border: 1.5px solid rgba(79, 102, 60, 0.34);
 
   font-family: inherit;
   font-weight: inherit;
@@ -89,18 +89,18 @@ button.cta-button:disabled {
   font-size: 18px;
   line-height: 1.2;
 
-  color: rgba(66, 82, 52, 0.95);
+  color: rgba(46, 61, 35, 0.95);
   outline: none;
   box-sizing: border-box;
 }
 
 .form-grid input:focus {
-  border-color: rgba(79, 102, 60, 0.72);
-  box-shadow: 0 0 0 4px rgba(112, 134, 92, 0.16);
+  border-color: rgba(79, 102, 60, 0.68);
+  box-shadow: 0 0 0 4px rgba(79, 102, 60, 0.16);
 }
 
 .form-grid input::placeholder {
-  color: rgba(66, 82, 52, 0.42);
+  color: rgba(46, 61, 35, 0.42);
 }
 
 /* Optional: keep forms from looking too flat on wide screens */

@@ -76,7 +76,7 @@ export default function Games({ user }) {
               >
                 <h3>{game.name}</h3>
                 <p className="game-author">Difficulty: {game.difficulty}</p>
-                <p className="game-author">Player: {game.createdBy}</p>
+                <p className="game-author">Creator: {game.createdBy}</p>
                 <p className="game-author">
                   Created: {formatDate(game.createdAt)}
                 </p>

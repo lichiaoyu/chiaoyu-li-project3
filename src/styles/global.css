@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Averia+Libre:wght@300;400;700&display=swap');
 
 :root{
-  --bg-cream: rgb(246, 244, 238);
+  --bg-cream: rgb(190, 202, 181);
   --green-dark: rgb(79, 102, 60);
-  --green-medium: rgb(112, 134, 92);
-  --green-text: rgb(66, 82, 52);
+  --green-medium: rgb(90, 116, 68);
+  --green-text: rgb(35, 47, 27);
   --green-hover: rgb(67, 88, 51);
-  --green-light: rgb(231, 236, 224);
-  --green-border: rgb(178, 191, 168);
-  --shadow: 0 12px 32px rgba(43, 52, 36, 0.14);
+  --green-light: rgb(171, 185, 160);
+  --green-border: rgb(116, 136, 99);
+  --shadow: 0 16px 36px rgba(30, 38, 24, 0.24);
   --nav-h: 64px;
 }
 
@@ -18,7 +18,9 @@ html, body{ height:100%; }
 body{
   margin:0;
   font-family: 'Averia Libre', 'Comic Sans MS', cursive;
-  background: var(--bg-cream);
+  background:
+    radial-gradient(circle at top, rgba(79, 102, 60, 0.14), transparent 38%),
+    linear-gradient(180deg, rgb(209, 219, 200) 0%, var(--bg-cream) 100%);
   color: var(--green-text);
 }
 
@@ -30,7 +32,9 @@ body{
   top:0; left:0; right:0;
   height: var(--nav-h);
   z-index: 10;
-  background: var(--green-dark);
+  background: rgba(79, 102, 60, 0.96);
+  border-bottom: 1px solid rgba(225, 231, 218, 0.12);
+  backdrop-filter: blur(10px);
 }
 
 .navbar-container{
@@ -86,14 +90,14 @@ body{
 }
 
 .nav-link:hover{
-  background: rgba(246, 244, 238, 0.16);
-  border-color: rgba(246, 244, 238, 0.32);
+  background: rgba(225, 231, 218, 0.14);
+  border-color: rgba(225, 231, 218, 0.28);
   transform: translateY(-1px);
 }
 
 .nav-link.active{
-  background: rgba(246, 244, 238, 0.22);
-  border-color: rgba(246, 244, 238, 0.5);
+  background: rgba(225, 231, 218, 0.18);
+  border-color: rgba(225, 231, 218, 0.38);
 }
 
 /* =========================
@@ -109,7 +113,7 @@ body{
    HOME: HERO + FEATURES
 ========================= */
 .hero{
-  background: var(--bg-cream);
+  background: linear-gradient(180deg, rgba(207, 218, 197, 0.98), rgba(186, 199, 176, 0.98));
   border: 1px solid var(--green-border);
   border-radius: 18px;
   box-shadow: var(--shadow);
@@ -160,7 +164,7 @@ body{
 
 .features{
   margin-top: 16px;
-  background: var(--bg-cream);
+  background: linear-gradient(180deg, rgba(203, 214, 193, 0.98), rgba(183, 196, 172, 0.98));
   border: 1px solid var(--green-border);
   border-radius: 18px;
   box-shadow: var(--shadow);
@@ -215,7 +219,7 @@ body{
    GENERIC PAGE SECTION
 ========================= */
 .page-section{
-  background: var(--bg-cream);
+  background: linear-gradient(180deg, rgba(203, 214, 193, 0.98), rgba(183, 196, 172, 0.98));
   border: 1px solid var(--green-border);
   border-radius: 18px;
   box-shadow: var(--shadow);
@@ -274,7 +278,7 @@ body{
 }
 
 .form-field input::placeholder{
-  color: rgba(66, 82, 52, 0.42);
+  color: rgba(46, 61, 35, 0.42);
 }
 
 .btn{
@@ -342,7 +346,7 @@ body{
 }
 
 .score-table tr:hover{
-  background: rgba(112, 134, 92, 0.08);
+  background: rgba(79, 102, 60, 0.08);
 }
 
 /* =========================
@@ -438,7 +442,7 @@ button.game-card{
 
 .game-card:hover{
   transform: translateY(-3px);
-  box-shadow: 0 10px 28px rgba(79, 102, 60, 0.16);
+  box-shadow: 0 14px 28px rgba(30, 38, 24, 0.24);
   border-color: var(--green-medium);
 }
 
@@ -460,7 +464,7 @@ button.game-card{
    GAME PAGES (easy/hard)
 ========================= */
 .game-section{
-  background: var(--bg-cream);
+  background: linear-gradient(180deg, rgba(203, 214, 193, 0.98), rgba(183, 196, 172, 0.98));
   border: 1px solid var(--green-border);
   border-radius: 18px;
   box-shadow: var(--shadow);
@@ -498,7 +502,7 @@ button.game-card{
   border: 2px solid var(--green-border);
   border-radius: 16px;
   overflow: hidden;
-  background: var(--bg-cream);
+  background: rgb(215, 224, 206);
   max-width: 620px;
   margin: 0 auto;
 }
@@ -510,7 +514,7 @@ button.game-card{
   width: 100%;
   aspect-ratio: 1 / 1;
   border: 1px solid var(--green-border);
-  background: var(--bg-cream);
+  background: rgb(215, 224, 206);
   color: var(--green-text);
   text-align: center;
   font-weight: 700;
@@ -520,13 +524,13 @@ button.game-card{
 }
 
 .cell:hover{
-  background: rgba(112, 134, 92, 0.11);
+  background: rgba(79, 102, 60, 0.14);
 }
 
 .cell:focus{
   outline: 2px solid var(--green-medium);
   outline-offset: -2px;
-  background: rgba(112, 134, 92, 0.08);
+  background: rgba(79, 102, 60, 0.14);
 }
 
 .cell.fixed{

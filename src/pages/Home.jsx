@@ -21,22 +21,22 @@ export default function Home() {
         </section>
 
         <section className="features">
-          <h2>Features</h2>
+          <h2>Why You&apos;ll Keep Coming Back</h2>
 
           <div className="features-grid">
             <div className="feature-card">
-              <h3>Easy & Hard Modes</h3>
-              <p>Choose between easy 6×6 grids or challenging 9×9 puzzles.</p>
+              <h3>Pick Your Puzzle Mood</h3>
+              <p>Go for a breezy 6×6 board or dive into a trickier 9×9 challenge.</p>
             </div>
 
             <div className="feature-card">
-              <h3>Timer</h3>
-              <p>Track your completion time and compete with others.</p>
+              <h3>Race the Clock</h3>
+              <p>Keep an eye on your time and see how fast you can finish each board.</p>
             </div>
 
             <div className="feature-card">
-              <h3>Leaderboard</h3>
-              <p>See how you rank against other players.</p>
+              <h3>Climb the Leaderboard</h3>
+              <p>Post your best runs and find out how your puzzle skills stack up.</p>
             </div>
           </div>
         </section>
