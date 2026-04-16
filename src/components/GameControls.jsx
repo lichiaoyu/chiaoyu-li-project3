@@ -4,7 +4,6 @@ export default function GameControls({ user }) {
   const { dispatch, state } = useGame();
 
   const disabledReset = !user || state.status === "idle";
-  const disabledHint = !user || state.status !== "playing";
 
   return (
     <div className="button-group">
@@ -14,14 +13,6 @@ export default function GameControls({ user }) {
         disabled={disabledReset}
       >
         Reset
-      </button>
-
-      <button
-        className="cta-button"
-        onClick={() => dispatch({ type: "HINT" })}
-        disabled={disabledHint}
-      >
-        Hint
       </button>
     </div>
   );

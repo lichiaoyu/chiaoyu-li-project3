@@ -43,10 +43,15 @@ router.get("/", async function (req, res) {
 
 router.post("/", async function (req, res) {
   try {
-    const { gameId, username, timeMs } = req.body;
+    const username = req.cookies.username;
+    const { gameId, timeMs } = req.body;
 
-    if (!gameId || !username || !Number.isFinite(timeMs) || timeMs < 0) {
-      return res.status(400).json({ error: "gameId, username, and timeMs are required" });
+    if (!username) {
+      return res.status(401).json({ error: "Not logged in" });
+    }
+
+    if (!gameId || !Number.isFinite(timeMs) || timeMs < 0) {
+      return res.status(400).json({ error: "gameId and timeMs are required" });
     }
 
     const game = await SudokuModel.findById(gameId).exec();
@@ -79,6 +84,7 @@ router.post("/", async function (req, res) {
       highScores: game.highScores,
     });
   } catch (error) {
+    console.error("highscore update error:", error);
     return res.status(500).json({ error: "Failed to update highscore" });
   }
 });
@@ -104,6 +110,7 @@ router.get("/:gameId", async function (req, res) {
       highScores: scores,
     });
   } catch (error) {
+    console.error("game highscore fetch error:", error);
     return res.status(500).json({ error: "Failed to fetch game highscore" });
   }
 });

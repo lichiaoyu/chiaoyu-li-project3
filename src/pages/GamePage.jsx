@@ -61,7 +61,6 @@ export default function GamePage({ user }) {
           },
           credentials: "include",
           body: JSON.stringify({
-            username: user,
             currentState: boardToSave,
           }),
         });
@@ -97,7 +96,6 @@ export default function GamePage({ user }) {
           },
           credentials: "include",
           body: JSON.stringify({
-            username: user,
             currentState: boardToSave,
             completedBy: completed,
           }),
@@ -131,7 +129,6 @@ export default function GamePage({ user }) {
           credentials: "include",
           body: JSON.stringify({
             gameId,
-            username: user,
             timeMs: state.elapsedMs,
           }),
         });

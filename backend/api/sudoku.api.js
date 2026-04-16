@@ -386,6 +386,7 @@ router.get("/", async function (req, res) {
 
     return res.json(summaries);
   } catch (error) {
+    console.error("sudoku list error:", error);
     return res.status(500).json({ error: "Failed to fetch sudoku games" });
   }
 });
@@ -401,6 +402,7 @@ router.get("/:gameId", async function (req, res) {
 
     return res.json(game);
   } catch (error) {
+    console.error("sudoku fetch error:", error);
     return res.status(500).json({ error: "Failed to fetch sudoku game" });
   }
 });
@@ -439,6 +441,7 @@ router.post("/", async function (req, res) {
 
     return res.status(201).json({ gameId: newGame._id });
   } catch (error) {
+    console.error("sudoku create error:", error);
     return res.status(500).json({ error: "Failed to create sudoku game" });
   }
 });
@@ -446,16 +449,24 @@ router.post("/", async function (req, res) {
 // PUT /api/sudoku/:gameId
 router.put("/:gameId", async function (req, res) {
   try {
-    const { username, currentState, completedBy } = req.body;
+    const username = req.cookies.username;
+    const { currentState, completedBy } = req.body;
+
+    if (!username) {
+      return res.status(401).json({ error: "Not logged in" });
+    }
 
     const updateData = {};
 
-    if (username && currentState) {
+    if (currentState) {
       updateData[`progressByUser.${username}`] = currentState;
     }
 
     if (completedBy) {
-      updateData.completedBy = completedBy;
+      const nextCompletedBy = Array.isArray(completedBy)
+        ? Array.from(new Set([...completedBy, username]))
+        : [username];
+      updateData.completedBy = nextCompletedBy;
     }
 
     const updatedGame = await SudokuModel.findByIdAndUpdate(
@@ -470,6 +481,7 @@ router.put("/:gameId", async function (req, res) {
 
     return res.json(updatedGame);
   } catch (error) {
+    console.error("sudoku update error:", error);
     return res.status(500).json({ error: "Failed to update sudoku game" });
   }
 });
@@ -485,6 +497,7 @@ router.delete("/:gameId", async function (req, res) {
 
     return res.json({ message: "Game deleted successfully" });
   } catch (error) {
+    console.error("sudoku delete error:", error);
     return res.status(500).json({ error: "Failed to delete sudoku game" });
   }
 });

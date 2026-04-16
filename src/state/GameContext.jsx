@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useReducer } from "react";
+import { createContext, useContext, useEffect, useMemo, useReducer } from "react";
 import { validateBoard, isCompleteAndValid } from "../sudoku/validate.js";
 import { findHintCell } from "../sudoku/hint.js";
 
