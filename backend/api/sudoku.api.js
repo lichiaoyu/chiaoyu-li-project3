@@ -90,27 +90,7 @@ const COLOR_MODIFIERS = [
   "Pastel",
 ];
 
-function buildWordBank() {
-  const bank = new Set(COLOR_WORDS);
-
-  for (const modifier of COLOR_MODIFIERS) {
-    for (const color of COLOR_WORDS) {
-      bank.add(`${modifier} ${color}`);
-    }
-  }
-
-  for (const firstColor of COLOR_WORDS) {
-    for (const secondColor of COLOR_WORDS) {
-      if (firstColor !== secondColor) {
-        bank.add(`${firstColor} ${secondColor}`);
-      }
-    }
-  }
-
-  return Array.from(bank);
-}
-
-const WORD_BANK = buildWordBank();
+const WORD_BANK = [...new Set([...COLOR_MODIFIERS, ...COLOR_WORDS])];
 
 const EASY_SEEDS = [
   {
