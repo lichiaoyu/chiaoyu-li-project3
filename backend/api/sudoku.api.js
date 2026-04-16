@@ -56,7 +56,7 @@ function buildWordBank() {
 
 const WORDS = buildWordBank();
 
-const EASY_BANK = [
+const EASY_SEEDS = [
   {
     puzzle: [
       [1, 0, 0, 4, 0, 6],
@@ -113,7 +113,7 @@ const EASY_BANK = [
   },
 ];
 
-const NORMAL_BANK = [
+const NORMAL_SEEDS = [
   {
     puzzle: [
       [5, 3, 0, 6, 7, 0, 9, 1, 0],
@@ -187,6 +187,163 @@ const NORMAL_BANK = [
     ],
   },
 ];
+
+function remapDigits(board, digitMap) {
+  return board.map((row) => row.map((value) => (value === 0 ? 0 : digitMap[value])));
+}
+
+function reorderRows(board, rowOrder) {
+  return rowOrder.map((index) => board[index].slice());
+}
+
+function reorderCols(board, colOrder) {
+  return board.map((row) => colOrder.map((index) => row[index]));
+}
+
+function buildAxisOrder(groupSize, groupOrder, withinGroupOrder) {
+  const order = [];
+
+  for (const groupIndex of groupOrder) {
+    for (const offset of withinGroupOrder[groupIndex]) {
+      order.push(groupIndex * groupSize + offset);
+    }
+  }
+
+  return order;
+}
+
+function applyVariant(seed, variant, config) {
+  const digitMap = Object.fromEntries(
+    variant.digits.map((digit, index) => [index + 1, digit])
+  );
+
+  const rowOrder = buildAxisOrder(
+    config.rowGroupSize,
+    variant.rowGroups,
+    variant.rowsInGroup
+  );
+  const colOrder = buildAxisOrder(
+    config.colGroupSize,
+    variant.colGroups,
+    variant.colsInGroup
+  );
+
+  return {
+    puzzle: reorderCols(
+      reorderRows(remapDigits(seed.puzzle, digitMap), rowOrder),
+      colOrder
+    ),
+    solution: reorderCols(
+      reorderRows(remapDigits(seed.solution, digitMap), rowOrder),
+      colOrder
+    ),
+  };
+}
+
+function expandBank(seeds, config, variants) {
+  return seeds.flatMap((seed) => variants.map((variant) => applyVariant(seed, variant, config)));
+}
+
+const EASY_VARIANTS = [
+  {
+    digits: [1, 2, 3, 4, 5, 6],
+    rowGroups: [0, 1, 2],
+    rowsInGroup: [[0, 1], [0, 1], [0, 1]],
+    colGroups: [0, 1],
+    colsInGroup: [[0, 1, 2], [0, 1, 2]],
+  },
+  {
+    digits: [2, 3, 4, 5, 6, 1],
+    rowGroups: [1, 2, 0],
+    rowsInGroup: [[1, 0], [0, 1], [1, 0]],
+    colGroups: [1, 0],
+    colsInGroup: [[2, 0, 1], [1, 2, 0]],
+  },
+  {
+    digits: [3, 4, 5, 6, 1, 2],
+    rowGroups: [2, 0, 1],
+    rowsInGroup: [[0, 1], [1, 0], [1, 0]],
+    colGroups: [0, 1],
+    colsInGroup: [[1, 2, 0], [2, 0, 1]],
+  },
+  {
+    digits: [4, 5, 6, 1, 2, 3],
+    rowGroups: [0, 2, 1],
+    rowsInGroup: [[1, 0], [1, 0], [0, 1]],
+    colGroups: [1, 0],
+    colsInGroup: [[0, 2, 1], [0, 1, 2]],
+  },
+  {
+    digits: [5, 6, 1, 2, 3, 4],
+    rowGroups: [1, 0, 2],
+    rowsInGroup: [[0, 1], [1, 0], [0, 1]],
+    colGroups: [0, 1],
+    colsInGroup: [[2, 1, 0], [1, 0, 2]],
+  },
+  {
+    digits: [6, 1, 2, 3, 4, 5],
+    rowGroups: [2, 1, 0],
+    rowsInGroup: [[1, 0], [0, 1], [1, 0]],
+    colGroups: [1, 0],
+    colsInGroup: [[1, 0, 2], [2, 1, 0]],
+  },
+];
+
+const NORMAL_VARIANTS = [
+  {
+    digits: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    rowGroups: [0, 1, 2],
+    rowsInGroup: [[0, 1, 2], [0, 1, 2], [0, 1, 2]],
+    colGroups: [0, 1, 2],
+    colsInGroup: [[0, 1, 2], [0, 1, 2], [0, 1, 2]],
+  },
+  {
+    digits: [2, 3, 4, 5, 6, 7, 8, 9, 1],
+    rowGroups: [1, 2, 0],
+    rowsInGroup: [[1, 2, 0], [2, 0, 1], [0, 2, 1]],
+    colGroups: [2, 0, 1],
+    colsInGroup: [[2, 0, 1], [1, 2, 0], [0, 2, 1]],
+  },
+  {
+    digits: [3, 4, 5, 6, 7, 8, 9, 1, 2],
+    rowGroups: [2, 0, 1],
+    rowsInGroup: [[2, 1, 0], [1, 0, 2], [0, 2, 1]],
+    colGroups: [1, 2, 0],
+    colsInGroup: [[1, 0, 2], [2, 1, 0], [0, 1, 2]],
+  },
+  {
+    digits: [4, 5, 6, 7, 8, 9, 1, 2, 3],
+    rowGroups: [0, 2, 1],
+    rowsInGroup: [[2, 0, 1], [1, 0, 2], [2, 1, 0]],
+    colGroups: [0, 2, 1],
+    colsInGroup: [[1, 2, 0], [0, 2, 1], [2, 1, 0]],
+  },
+  {
+    digits: [5, 6, 7, 8, 9, 1, 2, 3, 4],
+    rowGroups: [1, 0, 2],
+    rowsInGroup: [[0, 2, 1], [2, 1, 0], [1, 0, 2]],
+    colGroups: [2, 1, 0],
+    colsInGroup: [[0, 1, 2], [2, 0, 1], [1, 2, 0]],
+  },
+  {
+    digits: [6, 7, 8, 9, 1, 2, 3, 4, 5],
+    rowGroups: [2, 1, 0],
+    rowsInGroup: [[1, 0, 2], [0, 2, 1], [2, 1, 0]],
+    colGroups: [1, 0, 2],
+    colsInGroup: [[2, 1, 0], [0, 1, 2], [1, 0, 2]],
+  },
+];
+
+const EASY_BANK = expandBank(
+  EASY_SEEDS,
+  { rowGroupSize: 2, colGroupSize: 3 },
+  EASY_VARIANTS
+);
+const NORMAL_BANK = expandBank(
+  NORMAL_SEEDS,
+  { rowGroupSize: 3, colGroupSize: 3 },
+  NORMAL_VARIANTS
+);
 
 function deepClone(x) {
   return JSON.parse(JSON.stringify(x));
