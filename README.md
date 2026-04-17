@@ -49,4 +49,4 @@ This assignment took approximately 40 hours, including backend API implementatio
 
 ## Bonus Points Accomplished
 
-I completed the AI survey and submitted the project early. Those are the bonus items I intentionally completed in addition to the required project features.
+I did the early submission.
