@@ -10,7 +10,7 @@ Make sure to update the MongoDB string in server.js to start
 
 GitHub repo: https://github.com/lichiaoyu/chiaoyu-li-project3  
 Render app: https://chiaoyu-li-project3.onrender.com/  
-Video walkthrough: Not yet available  
+Video walkthrough: https://youtu.be/RhiTWw4ElLc  
 Collaborators: Chiao-Yu Li
 
 ## Challenges Faced
